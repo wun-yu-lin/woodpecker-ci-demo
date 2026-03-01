@@ -1,0 +1,56 @@
+version: "3.8"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "1m"
+    max-file: "1"
+    tag: "{{.Name}}"
+
+services:
+  woodpecker-server:
+    image: woodpeckerci/woodpecker-server:latest
+    container_name: woodpecker-server
+      #restart: unless-stopped
+    ports:
+      - 8000:8000
+    volumes:
+      - ./data/server:/var/lib/woodpecker
+    environment:
+      - WOODPECKER_OPEN=true
+      - WOODPECKER_HOST=http://ci.${IP_ADDRESS}.nip.io:8000
+      - WOODPECKER_ADMIN=${WOODPECKER_ADMIN}
+      - WOODPECKER_AGENT_SECRET=${WOODPECKER_AGENT_SECRET}
+      - WOODPECKER_GITHUB=true
+      - WOODPECKER_GITHUB_CLIENT=${WOODPECKER_GITHUB_CLIENT}
+      - WOODPECKER_GITHUB_SECRET=${WOODPECKER_GITHUB_SECRET}
+    restart: unless-stopped
+    cpus: 0.521
+    mem_limit: 512m
+    networks:
+      - woodpecker-net
+    logging: *default-logging
+
+  woodpecker-agent:
+    image: woodpeckerci/woodpecker-agent:latest
+    container_name: woodpecker-agent
+    command: agent
+      #restart: unless-stopped
+    depends_on:
+      - woodpecker-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WOODPECKER_SERVER=woodpecker-server:9000
+      - WOODPECKER_AGENT_SECRET=${WOODPECKER_AGENT_SECRET}
+        #restart: unless-stopped
+    cpus: 0.5
+    mem_limit: 512m
+    networks:
+      - woodpecker-net
+    logging: *default-logging
+
+networks:
+  woodpecker-net:
+    name: woodpecker-net

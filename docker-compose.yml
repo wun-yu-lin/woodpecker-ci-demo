@@ -12,7 +12,7 @@ services:
   woodpecker-gitea:
     container_name: woodpecker-gitea
     image: gitea/gitea:${GITEA_VERSION:-1.14.5}
-    restart: unless-stopped
+      #restart: unless-stopped
     environment:
       - APP_NAME="Gitea"
       - USER_UID=1000
@@ -41,7 +41,7 @@ services:
   woodpecker-server:
     image: woodpeckerci/woodpecker-server:v0.15
     container_name: woodpecker-server
-    restart: unless-stopped
+      #restart: unless-stopped
     ports:
       - 8000:8000
     volumes:
@@ -55,7 +55,7 @@ services:
       - WOODPECKER_GITEA_CLIENT=${WOODPECKER_GITEA_CLIENT}
       - WOODPECKER_GITEA_SECRET=${WOODPECKER_GITEA_SECRET}
       - WOODPECKER_GITEA_SKIP_VERIFY=true
-    restart: unless-stopped
+        #restart: unless-stopped
     cpus: 0.5
     mem_limit: 512m
     networks:
@@ -66,7 +66,7 @@ services:
     image: woodpeckerci/woodpecker-agent:v0.15
     container_name: woodpecker-agent
     command: agent
-    restart: unless-stopped
+      #restart: unless-stopped
     depends_on:
       - woodpecker-server
     volumes:
@@ -74,7 +74,7 @@ services:
     environment:
       - WOODPECKER_SERVER=woodpecker-server:9000
       - WOODPECKER_AGENT_SECRET=${WOODPECKER_AGENT_SECRET}
-    restart: unless-stopped
+        #restart: unless-stopped
     cpus: 0.5
     mem_limit: 512m
     networks:
