@@ -10,13 +10,13 @@ x-logging:
 
 services:
   woodpecker-server:
-    image: woodpeckerci/woodpecker-server:latest
+    image: woodpeckerci/woodpecker-server:next-f9076af368
     container_name: woodpecker-server
-      #restart: unless-stopped
+    restart: unless-stopped
     ports:
       - 8000:8000
     volumes:
-      - ./data/server:/var/lib/woodpecker
+      - ./data/next/server:/var/lib/woodpecker
     environment:
       - WOODPECKER_OPEN=true
       - WOODPECKER_HOST=http://ci.${IP_ADDRESS}.nip.io:8000
@@ -33,10 +33,10 @@ services:
     logging: *default-logging
 
   woodpecker-agent:
-    image: woodpeckerci/woodpecker-agent:latest
+    image: woodpeckerci/woodpecker-agent:next-f9076af368
     container_name: woodpecker-agent
     command: agent
-      #restart: unless-stopped
+    restart: unless-stopped
     depends_on:
       - woodpecker-server
     volumes:
