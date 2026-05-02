@@ -12,7 +12,6 @@ services:
   woodpecker-server:
     image: woodpeckerci/woodpecker-server:next-f9076af368
     container_name: woodpecker-server
-    restart: unless-stopped
     ports:
       - 8000:8000
     volumes:
@@ -44,7 +43,6 @@ services:
     environment:
       - WOODPECKER_SERVER=woodpecker-server:9000
       - WOODPECKER_AGENT_SECRET=${WOODPECKER_AGENT_SECRET}
-        #restart: unless-stopped
     cpus: 0.5
     mem_limit: 512m
     networks:
